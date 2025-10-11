@@ -1,0 +1,6 @@
+UPLOAD_IMAGE_DIR = "uploads/image"
+UPLOAD_IMAGES_DIR = "uploads/images"
+UPLOAD_FILE_DIR = "uploads/file"
+UPLOAD_FILES_DIR = "uploads/files"
+UPLOAD_DOCUMENTS_DIR = "uploads/documents"
+LOGS_DIR = "logs"

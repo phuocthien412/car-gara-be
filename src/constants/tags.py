@@ -1,0 +1,8 @@
+ADMIN_AUTH_TAG = 'AdminAuth'
+MESSAGES_TAG = 'Messages'
+TICKETS_TAG = 'Tickets'
+CHART_TAG = 'Chart'
+SANPHAM_TAG = 'SanPham'
+DICHVU_TAG = 'DichVu'
+DUAN_TAG = 'DuAn'
+TINTUC_TAG = 'TinTuc'
