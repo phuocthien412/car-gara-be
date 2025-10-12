@@ -9,6 +9,8 @@ class ItemResponseDict(BaseModel):
   description: Optional[str] = None
   price: Optional[float] = None
   image: Optional[str] = None
+  quantity: Optional[int] = None
+  in_stock: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
 

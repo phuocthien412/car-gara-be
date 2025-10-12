@@ -1,11 +1,13 @@
-from typing import Annotated
-from fastapi import APIRouter, Depends
+from typing import Annotated, List
+from fastapi import APIRouter, Depends, UploadFile, File
 from src.dto.deps_request import AuthAdminRequest, TokenPayload
 from src.controllers.items import BaseItemController
 from src.repository.crud import CrudRepository
 from src.dto.item_request import CreateItemReqBody, UpdateItemReqBody, ListItemReqQuery, DeleteOneItemReqBody, DeleteManyItemReqBody
 from src.dto.item_response import CreateItemResponse, UpdateItemResponse, ListItemResponse, DetailItemResponse, DeleteOneItemResponse, DeleteManyItemResponse
 from src.constants.config import config
+from src.dto.admin_respone import UploadImagesResponse
+from src.constants.path import URL_UPLOAD_IMAGES_ADMIN
 
 
 duan_router = APIRouter()
@@ -66,3 +68,9 @@ async def delete_many_du_an(
 ):
   return await controller.delete_many(payload)
 
+
+@duan_router.post(URL_UPLOAD_IMAGES_ADMIN, response_model=UploadImagesResponse)
+async def upload_images_du_an(
+  files: List[UploadFile] = File(...),
+):
+  return await controller.upload_images(files)

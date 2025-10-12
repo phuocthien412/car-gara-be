@@ -11,6 +11,8 @@ class ItemModel(BaseModel):
   description: Optional[str] = None
   price: Optional[float] = None
   image: Optional[str] = None
+  quantity: Optional[int] = 0
+  in_stock: Optional[bool] = True
   created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
   updated_at: Optional[datetime] = None
 

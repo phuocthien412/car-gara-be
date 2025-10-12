@@ -4,7 +4,7 @@ from starlette.requests import Request
 from fastapi.exceptions import RequestValidationError
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
-from src.constants.dir import UPLOAD_IMAGES_DIR
+from src.constants.dir import UPLOAD_IMAGES_DIR, UPLOAD_DOCUMENTS_DIR
 from src.error.error_handler import errorHandler
 from src.routes.admin import admin_router
 from src.routes.dich_vu import dichvu_router
@@ -21,6 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 UPLOAD_DIR = Path(UPLOAD_IMAGES_DIR)
+UPLOAD_DOCS_DIR = Path(UPLOAD_DOCUMENTS_DIR)
 
 init_folder()
 @asynccontextmanager
@@ -47,6 +48,7 @@ app.add_middleware(
 )
 # Serve media
 app.mount('/' + UPLOAD_IMAGES_DIR, StaticFiles(directory=UPLOAD_DIR), name="images")
+app.mount('/' + UPLOAD_DOCUMENTS_DIR, StaticFiles(directory=UPLOAD_DOCS_DIR), name="documents")
 # Handler unprocessable entity error
 app.add_exception_handler(RequestValidationError, errorHandler.unprocessable_entity_error)
 # Handler internal server error

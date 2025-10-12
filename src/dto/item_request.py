@@ -12,6 +12,8 @@ class CreateItemReqBody(BaseModel):
   description: Optional[str] = None
   price: Optional[float] = None
   image: Optional[str] = None
+  quantity: Optional[int] = 0
+  in_stock: Optional[bool] = True
 
 
 class UpdateItemReqBody(BaseModel):
@@ -20,6 +22,8 @@ class UpdateItemReqBody(BaseModel):
   description: Optional[str] = None
   price: Optional[float] = None
   image: Optional[str] = None
+  quantity: Optional[int] = None
+  in_stock: Optional[bool] = None
 
   @field_validator("id")
   @classmethod

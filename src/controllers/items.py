@@ -1,8 +1,15 @@
 from typing import Optional, List
+import uuid
+from pathlib import Path
+from fastapi import UploadFile, HTTPException
+from starlette.status import HTTP_400_BAD_REQUEST
 from src.repository.crud import CrudRepository
 from src.dto.item_request import CreateItemReqBody, UpdateItemReqBody, ListItemReqQuery, DeleteOneItemReqBody, DeleteManyItemReqBody
 from src.dto.item_response import CreateItemResponse, UpdateItemResponse, ListItemResponse, DetailItemResponse, DeleteOneItemResponse, DeleteManyItemResponse
-from src.constants.messages import CREATED_SUCCESSFULLY, UPDATED_SUCCESSFULLY, DELETE_SUCCESSFULLY
+from src.constants.messages import CREATED_SUCCESSFULLY, UPDATED_SUCCESSFULLY, DELETE_SUCCESSFULLY, UPLOAD_SUCCESSFULLY
+from src.constants.config import config
+from src.constants.dir import UPLOAD_DOCUMENTS_DIR
+from src.dto.admin_respone import UploadImagesResponse
 
 
 class BaseItemController:
@@ -33,3 +40,25 @@ class BaseItemController:
     await self.repo.delete_many(payload.ids)
     return DeleteManyItemResponse(msg=DELETE_SUCCESSFULLY)
 
+  async def upload_images(self, files: List[UploadFile]) -> UploadImagesResponse:
+    allowed_extensions = set(config.ALLOWED_IMG_EXTENSIONS.split(","))
+    max_file_size = int(config.MAX_FILE_SIZE_UPLOAD_IMG)
+    upload_dir = Path(UPLOAD_DOCUMENTS_DIR)
+    uploaded_files = []
+    for file in files:
+      ext = Path(file.filename).suffix.lower()
+      if ext not in allowed_extensions:
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=f"File {file.filename} không hợp lệ")
+      contents = await file.read()
+      if len(contents) > max_file_size:
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=f"File {file.filename} vượt quá {max_file_size//1024//1024}MB")
+      filename = f"{uuid.uuid4()}{ext}"
+      save_path = upload_dir / filename
+      with save_path.open("wb") as f:
+        f.write(contents)
+      uploaded_files.append({
+        "filename": filename,
+        "http": config.SERVER_URL,
+        "upload_folder": UPLOAD_DOCUMENTS_DIR
+      })
+    return UploadImagesResponse(msg=UPLOAD_SUCCESSFULLY, data=uploaded_files)
