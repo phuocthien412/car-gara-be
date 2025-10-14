@@ -13,6 +13,7 @@ class Config(BaseSettings):
   COLLECTION_SANPHAM: str
   COLLECTION_DUAN: str
   COLLECTION_TINTUC: str
+  COLLECTION_LIENHE: str
   UVICORN_RUN: str
   PORT: int
   MAX_FILE_SIZE_UPLOAD_IMG: int

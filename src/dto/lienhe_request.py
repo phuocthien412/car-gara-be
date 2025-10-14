@@ -1,5 +1,5 @@
-from typing import Optional, Literal, List
-from pydantic import BaseModel, Field, field_validator
+﻿from typing import Optional, Literal, List
+from pydantic import BaseModel, field_validator
 from bson import ObjectId
 from fastapi import Query
 from src.constants.pagination import LIMIT, PAGE
@@ -7,23 +7,23 @@ from src.constants.enum import ENUM_DESC
 from src.constants.messages import ERROR_ID_INVALID, ERROR_PAGINATION
 
 
-class CreateItemReqBody(BaseModel):
-  title: Optional[str] = None
-  description: Optional[str] = None
-  price: Optional[float] = None
-  image: Optional[str] = None
-  quantity: Optional[int] = 0
-  in_stock: Optional[bool] = True
+class CreateLienHeReqBody(BaseModel):
+  name: Optional[str] = None
+  hotline: Optional[str] = None
+  email: Optional[str] = None
+  phone: Optional[str] = None
+  address: Optional[str] = None
+  working_hours: Optional[str] = None
 
 
-class UpdateItemReqBody(BaseModel):
+class UpdateLienHeReqBody(BaseModel):
   id: str
-  title: Optional[str] = None
-  description: Optional[str] = None
-  price: Optional[float] = None
-  image: Optional[str] = None
-  quantity: Optional[int] = None
-  in_stock: Optional[bool] = None
+  name: Optional[str] = None
+  hotline: Optional[str] = None
+  email: Optional[str] = None
+  phone: Optional[str] = None
+  address: Optional[str] = None
+  working_hours: Optional[str] = None
 
   @field_validator("id")
   @classmethod
@@ -33,7 +33,7 @@ class UpdateItemReqBody(BaseModel):
     return v
 
 
-class ListItemReqQuery(BaseModel):
+class ListLienHeReqQuery(BaseModel):
   page: Optional[int] = Query(default=PAGE, ge=1)
   limit: Optional[int] = Query(default=LIMIT, ge=1)
   q: Optional[str] = None
@@ -49,11 +49,7 @@ class ListItemReqQuery(BaseModel):
     return v
 
 
-class DetailItemReqParams(BaseModel):
-  id: str
-
-
-class DeleteOneItemReqBody(BaseModel):
+class DeleteOneLienHeReqBody(BaseModel):
   id: str
 
   @field_validator("id")
@@ -64,7 +60,7 @@ class DeleteOneItemReqBody(BaseModel):
     return v
 
 
-class DeleteManyItemReqBody(BaseModel):
+class DeleteManyLienHeReqBody(BaseModel):
   ids: List[str]
 
   @field_validator("ids")
@@ -76,4 +72,3 @@ class DeleteManyItemReqBody(BaseModel):
       if not isinstance(i, str) or not ObjectId.is_valid(i):
         raise ValueError(f"id invalid: {i}")
     return v
-

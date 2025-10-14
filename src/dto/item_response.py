@@ -5,7 +5,7 @@ from datetime import datetime
 
 class ItemResponseDict(BaseModel):
   id: str = Field(default_factory=str, alias="_id")
-  title: str
+  title: Optional[str] = None
   description: Optional[str] = None
   price: Optional[float] = None
   image: Optional[str] = None

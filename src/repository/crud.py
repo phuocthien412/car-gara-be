@@ -1,6 +1,6 @@
 import re
 import asyncio
-from typing import Optional, Tuple, cast, List
+from typing import Optional, Tuple, cast, List, Type
 from bson import ObjectId
 from fastapi import HTTPException
 from pymongo import ASCENDING, DESCENDING
@@ -21,12 +21,13 @@ def _serialize(doc: dict) -> dict:
 
 
 class CrudRepository:
-  def __init__(self, collection_name: str):
+  def __init__(self, collection_name: str, model_cls: Type[ItemModel] = ItemModel):
     self.db = db
     self.collection = self.db.get_collection(collection_name)
+    self.model_cls = model_cls
 
   async def create(self, payload: dict) -> dict:
-    schema = ItemModel(**payload)
+    schema = self.model_cls(**payload)
     data_dump = schema.model_dump(by_alias=True, exclude_none=True, exclude={"id"})
     result = await self.collection.insert_one(data_dump)
     row = await self.collection.find_one({"_id": result.inserted_id})

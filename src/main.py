@@ -11,11 +11,12 @@ from src.routes.dich_vu import dichvu_router
 from src.routes.san_pham import sanpham_router
 from src.routes.du_an import duan_router
 from src.routes.tin_tuc import tintuc_router
+from src.routes.lien_he import lienhe_router
 from src.database.db import db
 from src.utils.http import start_server
 from src.utils.file import init_folder
 from src.constants.path import URL_ADMIN
-from src.constants.tags import ADMIN_AUTH_TAG, CHART_TAG, MESSAGES_TAG, TICKETS_TAG, DICHVU_TAG, SANPHAM_TAG, DUAN_TAG, TINTUC_TAG
+from src.constants.tags import ADMIN_AUTH_TAG, CHART_TAG, MESSAGES_TAG, TICKETS_TAG, DICHVU_TAG, SANPHAM_TAG, DUAN_TAG, TINTUC_TAG, LIENHE_TAG
 from src.constants.messages import SERVER_STARTING, SERVER_SHUTDOWN
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
@@ -61,6 +62,7 @@ app.include_router(dichvu_router, prefix='/dichvu', tags=[DICHVU_TAG])
 app.include_router(sanpham_router, prefix='/sanpham', tags=[SANPHAM_TAG])
 app.include_router(duan_router, prefix='/duan', tags=[DUAN_TAG])
 app.include_router(tintuc_router, prefix='/tintuc', tags=[TINTUC_TAG])
+app.include_router(lienhe_router, prefix='/lienhe', tags=[LIENHE_TAG])
 # Run server with certificate
 if __name__ == "__main__":
   start_server()
