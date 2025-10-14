@@ -14,6 +14,7 @@ class Config(BaseSettings):
   COLLECTION_DUAN: str
   COLLECTION_TINTUC: str
   COLLECTION_LIENHE: str
+  COLLECTION_VIDEO: str
   UVICORN_RUN: str
   PORT: int
   MAX_FILE_SIZE_UPLOAD_IMG: int
