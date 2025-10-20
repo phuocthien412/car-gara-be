@@ -25,7 +25,9 @@ class BaseItemController:
     return UpdateItemResponse(msg=UPDATED_SUCCESSFULLY, data=data)
 
   async def list(self, payload: ListItemReqQuery) -> ListItemResponse:
-    result = await self.repo.list(payload.page, payload.limit, payload.q, payload.sort_order)
+    # Prefer explicit `title` search if provided; fallback to generic `q`
+    search_q = payload.title or payload.q
+    result = await self.repo.list(payload.page, payload.limit, search_q, payload.sort_order)
     return ListItemResponse(msg="OK", data=result)
 
   async def detail(self, id: str) -> DetailItemResponse:

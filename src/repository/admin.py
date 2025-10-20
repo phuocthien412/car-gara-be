@@ -55,6 +55,26 @@ class AdminRepository:
     result['admin'] = admin
     return result
   
+  async def reset_password_repo(self, payload: {"ma_admin": str, "password": str}) -> str: # type: ignore
+    password_hash = bcrypt.hash(payload["password"])
+    await self.db.admin.update_one({"_id": ObjectId(payload["ma_admin"])}, {"$set": {"password": password_hash, "forgot_password_token": None}})
+    return "Password reset successfully"
+
+  async def update_admin_profile_repo(self, payload: UpdateAdminReqBody, user_id: str)->AdminResponseDict:
+    data_insert = payload.model_dump(exclude_none=True, exclude={"id"})
+    password_payload = payload.password
+    if password_payload is not None:
+      hashed_password = bcrypt.hash(password_payload)
+    else:
+      hashed_password = bcrypt.hash(config.PASSWORD_DEFAULT)  
+    data_insert["password"] = hashed_password
+    data_insert.pop("new_password", None)
+    data = await self.db.admin.find_one_and_update({"_id": ObjectId(user_id)}, {"$set": data_insert}, return_document=True)
+    if not data:
+      raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=ERROR_DATA_NOT_FOUND)
+    data = serialize_admin(data)
+    return data
+  
   async def refresh_token_repo(self, payload: RefreshTokenReqPayload)-> dict:
     now = datetime.now(timezone.utc)
     payload_dict = {"ma_admin": payload["ma_admin"], "trang_thai": payload["trang_thai"]}
@@ -85,6 +105,12 @@ class AdminRepository:
 
   async def update_admin_repo(self, payload: UpdateAdminReqBody)->AdminResponseDict:
     data_insert = payload.model_dump(exclude_none=True, exclude={"id"})
+    password_payload = payload.password
+    if password_payload is not None:
+      hashed_password = bcrypt.hash(password_payload)
+    else:
+      hashed_password = bcrypt.hash(config.PASSWORD_DEFAULT)  
+    data_insert["password"] = hashed_password
     data = await self.db.admin.find_one_and_update({"_id": ObjectId(payload.id)}, {"$set": data_insert}, return_document=True)
     if not data:
       raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=ERROR_DATA_NOT_FOUND)
@@ -92,12 +118,16 @@ class AdminRepository:
     return data
 
   async def create_admin_repo(self, payload: CreateAdminReqBody)->AdminResponseDict:
-    hashed_password = bcrypt.hash(config.PASSWORD_DEFAULT)
+    password_payload = payload.password
+    if password_payload is not None:
+      hashed_password = bcrypt.hash(password_payload)
+    else:
+      hashed_password = bcrypt.hash(config.PASSWORD_DEFAULT)
     data_obj = payload.model_dump()
     data_obj["trang_thai"] = ENUM_ADMIN_ACTIVE_STATUS
     data_obj["password"] = hashed_password
     data_schema = AdminModel(**data_obj) 
-    data_dump = data_schema.model_dump(by_alias=True, exclude_none=True, exclude={"id"})
+    data_dump = data_schema.model_dump(by_alias=True, exclude={"id"})
     data_insert = await self.db.admin.insert_one(data_dump)
     admin_find_one = await self.db.admin.find_one(
       {"_id": data_insert.inserted_id}, 
@@ -133,4 +163,3 @@ class AdminRepository:
       limit=limit,
       total_pages=(total + limit - 1) // limit
     )
-    

@@ -31,6 +31,7 @@ class PyObjectId(ObjectId):
 class CreateAdminReqBody(BaseModel):
   email: str
   name: Optional[str] = None
+  password: str
   sdt: Optional[str] = None
   vai_tro: Optional[str] = None
   ngay_sinh: Optional[datetime] = None

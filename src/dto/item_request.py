@@ -36,7 +36,9 @@ class UpdateItemReqBody(BaseModel):
 class ListItemReqQuery(BaseModel):
   page: Optional[int] = Query(default=PAGE, ge=1)
   limit: Optional[int] = Query(default=LIMIT, ge=1)
+  # Backward-compat: keep `q`, add explicit `title` for clarity
   q: Optional[str] = None
+  title: Optional[str] = None
   sort_order: Literal["asc", "desc"] = ENUM_DESC
 
   @field_validator("page", "limit", mode="before")
